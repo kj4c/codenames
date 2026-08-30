@@ -107,6 +107,33 @@ export function GameBoard({ initialState, onNewGame }: GameBoardProps) {
       />
 
       <main className="game__main">
+        <div className="game__mobile-teams">
+          <TeamSidebar
+            compact
+            team="blue"
+            remaining={game.blueRemaining}
+            isActive={game.currentTeam === 'blue' && !game.gameOver}
+            spymasterView={spymasterTeam === 'blue'}
+            canViewKey={
+              game.currentTeam === 'blue' && !game.currentClue && !game.gameOver
+            }
+            onToggleSpymasterView={() => handleToggleSpymasterView('blue')}
+            gameOver={game.gameOver}
+          />
+          <TeamSidebar
+            compact
+            team="red"
+            remaining={game.redRemaining}
+            isActive={game.currentTeam === 'red' && !game.gameOver}
+            spymasterView={spymasterTeam === 'red'}
+            canViewKey={
+              game.currentTeam === 'red' && !game.currentClue && !game.gameOver
+            }
+            onToggleSpymasterView={() => handleToggleSpymasterView('red')}
+            gameOver={game.gameOver}
+          />
+        </div>
+
         <TeamSidebar
           team="blue"
           remaining={game.blueRemaining}

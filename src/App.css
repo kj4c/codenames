@@ -13,12 +13,12 @@ body,
 #root {
   height: 100%;
   width: 100%;
-  overflow: hidden;
 }
 
 body {
   font-family: 'Open Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 /* ─── Setup Screen ─── */
@@ -26,11 +26,12 @@ body {
 .setup {
   min-height: 100vh;
   min-height: 100dvh;
-  height: 100%;
   background: linear-gradient(180deg, #b83228 0%, #d44830 40%, #c0392b 100%);
   display: flex;
   flex-direction: column;
   color: #fff;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .setup__header {
@@ -61,13 +62,6 @@ body {
   padding: 1.5vh 4vw 1vh;
   width: 100%;
   min-height: 0;
-}
-
-@media (max-width: 900px) {
-  .setup__content {
-    grid-template-columns: 1fr;
-    overflow-y: auto;
-  }
 }
 
 .setup__section {
@@ -170,12 +164,6 @@ body {
   gap: clamp(6px, 1vw, 12px);
   flex: 1;
   align-content: start;
-}
-
-@media (max-width: 900px) {
-  .setup__word-grid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  }
 }
 
 .setup__word-chip {
@@ -309,11 +297,12 @@ body {
 .game {
   min-height: 100vh;
   min-height: 100dvh;
-  height: 100%;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   transition: background 0.4s;
   overflow: hidden;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 .game--red {
@@ -329,9 +318,11 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: clamp(0.5rem, 1.2vh, 1rem) clamp(1rem, 2vw, 2rem);
+  padding-top: max(clamp(0.5rem, 1.2vh, 1rem), env(safe-area-inset-top));
   background: rgba(0, 0, 0, 0.35);
   color: #fff;
   flex-shrink: 0;
+  gap: 0.5rem;
 }
 
 .game__topbar-title {
@@ -364,6 +355,11 @@ body {
   gap: clamp(10px, 2vw, 28px);
   padding: clamp(8px, 1.5vh, 16px) clamp(12px, 2vw, 32px);
   min-height: 0;
+  overflow: hidden;
+}
+
+.game__mobile-teams {
+  display: none;
 }
 
 .game__board {
@@ -373,6 +369,8 @@ body {
   justify-content: center;
   min-width: 0;
   min-height: 0;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .game__grid {
@@ -407,15 +405,17 @@ body {
   height: 100%;
 }
 
-/* Team-colored hover glow (operative turn only) */
-.game--red .word-card--interactive:hover {
-  animation: hover-glow-red 1.6s ease-in-out infinite;
-  transform: translateY(-3px);
-}
+/* Team-colored hover glow (operative turn only, pointer devices) */
+@media (hover: hover) {
+  .game--red .word-card--interactive:hover {
+    animation: hover-glow-red 1.6s ease-in-out infinite;
+    transform: translateY(-3px);
+  }
 
-.game--blue .word-card--interactive:hover {
-  animation: hover-glow-blue 1.6s ease-in-out infinite;
-  transform: translateY(-3px);
+  .game--blue .word-card--interactive:hover {
+    animation: hover-glow-blue 1.6s ease-in-out infinite;
+    transform: translateY(-3px);
+  }
 }
 
 @keyframes hover-glow-red {
@@ -452,6 +452,10 @@ body {
       0 6px 16px rgba(0, 0, 0, 0.35);
     border-color: rgba(52, 152, 219, 0.75);
   }
+}
+
+.word-card--interactive:active {
+  transform: scale(0.97);
 }
 
 .word-card:disabled {
@@ -748,7 +752,7 @@ body {
 
 /* ─── Team Sidebars ─── */
 
-.team-sidebar {
+.team-sidebar--full {
   width: clamp(160px, 16vw, 280px);
   display: flex;
   flex-direction: column;
@@ -756,6 +760,62 @@ body {
   justify-content: center;
   gap: clamp(0.75rem, 2vh, 1.5rem);
   flex-shrink: 0;
+}
+
+/* Compact mobile team cards */
+.team-sidebar--compact {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 2px solid transparent;
+  min-width: 0;
+}
+
+.team-sidebar--compact.team-sidebar--blue {
+  background: linear-gradient(180deg, rgba(41, 128, 185, 0.55), rgba(26, 82, 118, 0.75));
+}
+
+.team-sidebar--compact.team-sidebar--red {
+  background: linear-gradient(180deg, rgba(192, 57, 43, 0.55), rgba(146, 43, 33, 0.75));
+}
+
+.team-sidebar--compact-active {
+  border-color: #f1c40f;
+  box-shadow: 0 0 12px rgba(241, 196, 15, 0.45);
+}
+
+.team-sidebar__compact-top {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.team-sidebar__compact-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.team-sidebar--compact .team-sidebar__count {
+  font-size: 1.75rem;
+}
+
+.team-sidebar__btn--compact {
+  padding: 0.35rem 0.5rem;
+  font-size: 0.7rem;
+  border-radius: 14px;
+}
+
+.team-sidebar--compact .team-sidebar__turn-badge {
+  margin-top: 0;
+  font-size: 0.6rem;
+  padding: 0.15rem 0.4rem;
 }
 
 .team-sidebar__panel {
@@ -1036,4 +1096,279 @@ body {
   color: #333;
   margin-bottom: 1.5rem;
   letter-spacing: 0.05em;
+}
+
+/* ─── Responsive: Tablet ─── */
+
+@media (max-width: 1024px) {
+  .setup__content {
+    grid-template-columns: 1fr;
+    padding: 1.5vh 3vw 1vh;
+    overflow-y: visible;
+  }
+
+  .game__grid {
+    --sidebar-space: clamp(120px, 14vw, 180px);
+    --avail-h: calc(100dvh - 9rem);
+    gap: clamp(5px, 1vw, 10px);
+  }
+
+  .team-sidebar--full {
+    width: clamp(110px, 13vw, 160px);
+  }
+}
+
+/* ─── Responsive: Mobile ─── */
+
+@media (max-width: 768px) {
+  .setup__header {
+    padding: 1.5rem 1rem 0.75rem;
+  }
+
+  .setup__title {
+    font-size: clamp(2.5rem, 12vw, 3.5rem);
+    letter-spacing: 0.1em;
+  }
+
+  .setup__subtitle {
+    font-size: 0.95rem;
+    padding: 0 0.5rem;
+  }
+
+  .setup__content {
+    padding: 1rem;
+    gap: 1.25rem;
+  }
+
+  .setup__add-row {
+    flex-direction: column;
+  }
+
+  .setup__add-row .setup__btn {
+    width: 100%;
+  }
+
+  .setup__word-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+
+  .setup__word-chip {
+    min-height: 44px;
+    font-size: 0.75rem;
+    padding: 0.4rem 0.35rem;
+  }
+
+  .setup__count-row h2 {
+    font-size: 1.5rem;
+  }
+
+  .setup__count {
+    font-size: 1.5rem;
+    padding: 0.25rem 1rem;
+  }
+
+  .setup__btn--start {
+    width: 100%;
+    max-width: 320px;
+    padding: 0.85rem 2rem;
+  }
+
+  .game__topbar-title {
+    font-size: 1rem;
+    letter-spacing: 0.12em;
+  }
+
+  .game__topbar-btn {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.6rem;
+  }
+
+  .game__main {
+    flex-direction: column;
+    padding: 0.5rem;
+    gap: 0.5rem;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .game__mobile-teams {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+    flex-shrink: 0;
+  }
+
+  .team-sidebar--full {
+    display: none;
+  }
+
+  .game__board {
+    flex: 1;
+    width: 100%;
+    align-items: flex-start;
+    overflow: visible;
+  }
+
+  .game__grid {
+    --sidebar-space: 0px;
+    --avail-w: calc(100vw - 1rem);
+    --avail-h: min(calc(100vw - 1rem), calc(100dvh - 14rem));
+    width: min(var(--avail-w), var(--avail-h));
+    height: auto;
+    aspect-ratio: 1;
+    gap: 4px;
+    margin: 0 auto;
+  }
+
+  .word-card__text {
+    font-size: clamp(0.55rem, 2.8vw, 0.85rem);
+    padding: 0.15rem;
+  }
+
+  .word-card__stripe {
+    height: 4px;
+  }
+
+  .clue-bar {
+    padding: 0.6rem 0.75rem;
+  }
+
+  .clue-bar__status {
+    font-size: 1.2rem;
+    line-height: 1.3;
+  }
+
+  .clue-bar--gameover {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .clue-bar__form {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .clue-bar__label {
+    font-size: 0.9rem;
+  }
+
+  .clue-bar__input--word {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .clue-bar__input,
+  .clue-bar__submit,
+  .clue-bar__end-turn,
+  .clue-bar__new-game {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .clue-bar__display {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .clue-bar__clue-text {
+    font-size: 1.75rem;
+  }
+
+  .word-card--anim-neutral .word-card__badge--neutral {
+    font-size: 0.55rem;
+    padding: 0.15em 0.35em;
+    border-width: 2px;
+  }
+}
+
+/* ─── Responsive: Small phones ─── */
+
+@media (max-width: 380px) {
+  .setup__word-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .game__topbar-actions .game__topbar-btn {
+    display: none;
+  }
+
+  .game__grid {
+    gap: 3px;
+  }
+
+  .word-card__text {
+    font-size: clamp(0.5rem, 3.2vw, 0.7rem);
+  }
+
+  .team-sidebar--compact .team-sidebar__count {
+    font-size: 1.4rem;
+  }
+
+  .clue-bar__status {
+    font-size: 1rem;
+  }
+}
+
+/* ─── Landscape phone ─── */
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .game {
+    height: auto;
+    min-height: 100dvh;
+  }
+
+  .game__main {
+    flex-direction: row;
+    overflow: hidden;
+  }
+
+  .game__mobile-teams {
+    display: none;
+  }
+
+  .team-sidebar--full {
+    display: flex;
+    width: 72px;
+  }
+
+  .team-sidebar--full .team-sidebar__heading,
+  .team-sidebar--full .team-sidebar__team-label {
+    font-size: 0.55rem;
+  }
+
+  .team-sidebar--full .team-sidebar__btn {
+    font-size: 0.55rem;
+    padding: 0.3rem 0.15rem;
+  }
+
+  .team-sidebar--full .team-sidebar__count {
+    font-size: 1.75rem;
+  }
+
+  .team-sidebar--full .team-sidebar__avatar {
+    display: none;
+  }
+
+  .team-sidebar--full .team-sidebar__panel {
+    padding: 0.35rem 0.25rem;
+  }
+
+  .game__grid {
+    --avail-h: calc(100dvh - 6rem);
+    --avail-w: calc(100vw - 180px);
+    gap: 3px;
+  }
+
+  .word-card__text {
+    font-size: clamp(0.45rem, 1.8vh, 0.7rem);
+  }
+
+  .clue-bar {
+    padding: 0.35rem 0.75rem;
+  }
+
+  .clue-bar__status {
+    font-size: 1rem;
+  }
 }
