@@ -43,6 +43,7 @@ export function createGame(words: string[]): GameState {
   const blueRemaining = cards.filter((c) => c.type === 'blue').length
 
   return {
+    mode: 'standard',
     cards,
     currentTeam: startingTeam,
     startingTeam,

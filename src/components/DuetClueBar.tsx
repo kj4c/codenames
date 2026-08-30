@@ -1,37 +1,40 @@
 import { useState, type FormEvent } from 'react'
-import type { Clue, Team } from '../types'
+import type { DuetClue, Player } from '../types'
 import { shouldAutofocusInput } from '../utils/device'
 
-interface ClueBarProps {
-  currentTeam: Team
-  currentClue: Clue | null
+interface DuetClueBarProps {
+  currentPlayer: Player
+  currentClue: DuetClue | null
   spymasterView: boolean
-  activeTeam: Team | null
+  suddenDeath: boolean
   gameOver: boolean
-  winner: Team | null
+  won: boolean
   assassinHit: boolean
+  agentsFound: number
+  tokensRemaining: number
   onSubmitClue: (word: string, count: number) => void
   onEndTurn: () => void
   onNewGame: () => void
 }
 
-export function ClueBar({
-  currentTeam,
+export function DuetClueBar({
+  currentPlayer,
   currentClue,
   spymasterView,
-  activeTeam,
+  suddenDeath,
   gameOver,
-  winner,
+  won,
   assassinHit,
+  agentsFound,
+  tokensRemaining,
   onSubmitClue,
   onEndTurn,
   onNewGame,
-}: ClueBarProps) {
+}: DuetClueBarProps) {
   const [clueWord, setClueWord] = useState('')
   const [clueCount, setClueCount] = useState('1')
 
-  const teamLabel = currentTeam === 'red' ? 'RED' : 'BLUE'
-  const teamClass = currentTeam
+  const playerLabel = currentPlayer === 'p1' ? 'PLAYER 1' : 'PLAYER 2'
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
@@ -43,20 +46,18 @@ export function ClueBar({
   }
 
   if (gameOver) {
-    const winLabel = winner === 'red' ? 'RED' : 'BLUE'
-    const winTeamClass = winner ?? teamClass
     return (
-      <div className={`clue-bar clue-bar--${winTeamClass} clue-bar--gameover`}>
+      <div className="clue-bar clue-bar--duet clue-bar--gameover">
         <p className="clue-bar__status">
-          {assassinHit
-            ? `${teamLabel} TEAM HIT THE ASSASSIN — ${winLabel} TEAM WINS!`
-            : `${winLabel} TEAM WINS!`}
+          {won
+            ? `ALL 15 AGENTS FOUND — YOU WIN!`
+            : assassinHit
+              ? 'ASSASSIN HIT — YOU LOSE!'
+              : suddenDeath
+                ? 'SUDDEN DEATH FAILED — YOU LOSE!'
+                : 'GAME OVER'}
         </p>
-        <button
-          type="button"
-          className="clue-bar__new-game"
-          onClick={onNewGame}
-        >
+        <button type="button" className="clue-bar__new-game" onClick={onNewGame}>
           NEW GAME
         </button>
       </div>
@@ -64,15 +65,19 @@ export function ClueBar({
   }
 
   const showClueForm =
-    spymasterView && activeTeam === currentTeam && !currentClue
+    spymasterView && !currentClue
 
-  const showCurrentClue = currentClue && currentClue.team === currentTeam
+  const showCurrentClue = currentClue !== null
 
   return (
-    <div className={`clue-bar clue-bar--${teamClass}`}>
+    <div className={`clue-bar clue-bar--duet ${suddenDeath ? 'clue-bar--sudden-death' : ''}`}>
+      {suddenDeath && (
+        <p className="clue-bar__sudden-death-banner">⚡ SUDDEN DEATH — NO MISTAKES ALLOWED</p>
+      )}
+
       {showClueForm ? (
         <form className="clue-bar__form" onSubmit={handleSubmit}>
-          <span className="clue-bar__label">{teamLabel} SPYMASTER — GIVE CLUE</span>
+          <span className="clue-bar__label">{playerLabel} — GIVE CLUE</span>
           <input
             type="text"
             className="clue-bar__input clue-bar__input--word"
@@ -89,7 +94,7 @@ export function ClueBar({
             value={clueCount}
             onChange={(e) => setClueCount(e.target.value)}
           />
-          <button type="submit" className="clue-bar__submit">
+          <button type="submit" className="clue-bar__submit clue-bar__submit--duet">
             GIVE CLUE
           </button>
         </form>
@@ -98,22 +103,15 @@ export function ClueBar({
           <span className="clue-bar__clue-text">
             {currentClue.word} {currentClue.count === 0 ? '∞' : currentClue.count}
           </span>
-          <button
-            type="button"
-            className="clue-bar__end-turn"
-            onClick={onEndTurn}
-          >
-            END TURN
+          <button type="button" className="clue-bar__end-turn" onClick={onEndTurn}>
+            STOP &amp; TAKE TOKEN
           </button>
         </div>
       ) : (
         <p className="clue-bar__status">
-          {teamLabel} TEAM&apos;S TURN
-          {currentClue && currentClue.team !== currentTeam && (
-            <span className="clue-bar__waiting">
-              {' '}
-              — Waiting for {currentClue.team === 'red' ? 'RED' : 'BLUE'} operatives
-            </span>
+          {playerLabel}&apos;S TURN — {agentsFound}/15 agents · {tokensRemaining} tokens left
+          {!currentClue && !spymasterView && (
+            <span className="clue-bar__hint"> — View your key before giving a clue</span>
           )}
         </p>
       )}

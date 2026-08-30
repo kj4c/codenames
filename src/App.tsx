@@ -1,17 +1,27 @@
 import { useState } from 'react'
 import { SetupScreen } from './components/SetupScreen'
 import { GameBoard } from './components/GameBoard'
+import { DuetGameBoard } from './components/DuetGameBoard'
 import { createGame } from './utils/gameLogic'
-import type { GameState } from './types'
+import { createDuetGame } from './utils/duetGameLogic'
+import type { AnyGameState, GameMode } from './types'
 import './App.css'
 
 function App() {
-  const [gameState, setGameState] = useState<GameState | null>(null)
+  const [mode, setMode] = useState<GameMode>('standard')
+  const [gameState, setGameState] = useState<AnyGameState | null>(null)
   const [savedWords, setSavedWords] = useState<string[]>([])
 
-  function handleStart(words: string[]) {
+  function handleStartStandard(words: string[]) {
+    setMode('standard')
     setSavedWords(words)
     setGameState(createGame(words))
+  }
+
+  function handleStartDuet(words: string[]) {
+    setMode('duet')
+    setSavedWords(words)
+    setGameState(createDuetGame(words))
   }
 
   function handleNewGame(words: string[]) {
@@ -22,8 +32,21 @@ function App() {
   if (!gameState) {
     return (
       <SetupScreen
+        mode={mode}
+        onModeChange={setMode}
         initialWords={savedWords}
-        onStart={handleStart}
+        onStartStandard={handleStartStandard}
+        onStartDuet={handleStartDuet}
+      />
+    )
+  }
+
+  if (gameState.mode === 'duet') {
+    return (
+      <DuetGameBoard
+        initialState={gameState}
+        words={savedWords}
+        onNewGame={handleNewGame}
       />
     )
   }

@@ -988,6 +988,11 @@ body {
   font-size: clamp(1rem, 2vw, 1.5rem);
 }
 
+.clue-bar__hint {
+  opacity: 0.85;
+  font-size: clamp(0.85rem, 1.5vw, 1.1rem);
+}
+
 .clue-bar__form {
   display: flex;
   align-items: center;
@@ -1222,8 +1227,9 @@ body {
   }
 
   .word-card__text {
-    font-size: clamp(0.55rem, 2.8vw, 0.85rem);
-    padding: 0.15rem;
+    font-size: clamp(0.78rem, 3.8vw, 1.1rem);
+    padding: 0.2rem 0.1rem;
+    line-height: 1.15;
   }
 
   .word-card__stripe {
@@ -1298,7 +1304,7 @@ body {
   }
 
   .word-card__text {
-    font-size: clamp(0.5rem, 3.2vw, 0.7rem);
+    font-size: clamp(0.68rem, 4.2vw, 0.95rem);
   }
 
   .team-sidebar--compact .team-sidebar__count {
@@ -1364,11 +1370,442 @@ body {
     font-size: clamp(0.45rem, 1.8vh, 0.7rem);
   }
 
-  .clue-bar {
-    padding: 0.35rem 0.75rem;
-  }
-
   .clue-bar__status {
     font-size: 1rem;
+  }
+}
+
+/* ─── Duet Mode ─── */
+
+.setup--duet {
+  background: linear-gradient(180deg, #1a6b3c 0%, #229954 40%, #1e8449 100%);
+}
+
+.setup__mode-toggle {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.setup__mode-btn {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  letter-spacing: 0.1em;
+  padding: 0.5rem 1.5rem;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 24px;
+  background: rgba(0, 0, 0, 0.2);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.setup__mode-btn--active {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: #fff;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
+}
+
+.setup__content--duet {
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.setup__duet-summary {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 0.5rem;
+}
+
+.setup__word-grid--duet {
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.setup__player-count {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.2rem;
+}
+
+.setup__btn--start-duet {
+  background: #1e8449;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+.game--duet {
+  background: linear-gradient(180deg, #145a32 0%, #1e8449 35%, #229954 70%, #145a32 100%);
+}
+
+.game--sudden-death {
+  animation: sudden-death-pulse 2s ease-in-out infinite;
+}
+
+@keyframes sudden-death-pulse {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.15); }
+}
+
+.game__topbar--duet {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.game__main--duet {
+  flex-direction: row;
+}
+
+.clue-bar--duet {
+  background: rgba(20, 90, 50, 0.85);
+}
+
+.clue-bar--sudden-death {
+  background: rgba(180, 50, 30, 0.75);
+}
+
+.clue-bar__sudden-death-banner {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(0.9rem, 2vw, 1.2rem);
+  color: #ffe066;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.35rem;
+  text-shadow: 0 0 8px rgba(255, 200, 0, 0.5);
+}
+
+.clue-bar__submit--duet {
+  background: #1e8449;
+}
+
+.clue-bar__submit--duet:hover {
+  background: #27ae60;
+}
+
+.word-card--agent-p1 {
+  background: #1a6b3c;
+  border-color: #145a32;
+}
+.word-card--agent-p1 .word-card__text {
+  color: #fff;
+}
+
+.word-card--agent-p2 {
+  background: #27ae60;
+  border-color: #1e8449;
+}
+.word-card--agent-p2 .word-card__text {
+  color: #fff;
+}
+
+.word-card--agent-both {
+  background: #2ecc71;
+  border-color: #f1c40f;
+  box-shadow: inset 0 0 0 2px rgba(241, 196, 15, 0.5);
+}
+.word-card--agent-both .word-card__text {
+  color: #1a3d24;
+}
+
+.word-card--agent {
+  background: #27ae60;
+  border-color: #1e8449;
+}
+.word-card--agent .word-card__text {
+  color: #fff;
+}
+
+.word-card__token-marker {
+  position: absolute;
+  bottom: 4px;
+  font-size: 0.9rem;
+  z-index: 3;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+.word-card__token-marker--p1 {
+  left: 6px;
+}
+
+.word-card__token-marker--p2 {
+  right: 6px;
+}
+
+@media (hover: hover) {
+  .game--duet .word-card--interactive-duet:hover {
+    animation: hover-glow-green 1.6s ease-in-out infinite;
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes hover-glow-green {
+  0%, 100% {
+    box-shadow:
+      0 0 10px rgba(46, 204, 113, 0.35),
+      0 0 20px rgba(46, 204, 113, 0.15),
+      0 4px 12px rgba(0, 0, 0, 0.3);
+    border-color: #d4b896;
+  }
+  50% {
+    box-shadow:
+      0 0 22px rgba(46, 204, 113, 0.65),
+      0 0 44px rgba(46, 204, 113, 0.3),
+      0 6px 16px rgba(0, 0, 0, 0.35);
+    border-color: rgba(46, 204, 113, 0.75);
+  }
+}
+
+.duet-sidebar {
+  width: clamp(140px, 15vw, 220px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+  justify-content: center;
+}
+
+.duet-sidebar--active .duet-sidebar__panel {
+  border-color: #f1c40f;
+  box-shadow: 0 0 16px rgba(241, 196, 15, 0.5);
+}
+
+.duet-sidebar__panel {
+  width: 100%;
+  padding: 0.75rem 0.5rem;
+  border-radius: 12px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.25);
+  border: 3px solid transparent;
+}
+
+.duet-sidebar__heading {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(0.85rem, 1.5vw, 1.2rem);
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 0.5rem;
+}
+
+.duet-sidebar__btn {
+  width: 100%;
+  padding: 0.5rem 0.25rem;
+  background: #27ae60;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(0.75rem, 1.3vw, 1rem);
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.duet-sidebar__btn:hover:not(:disabled) {
+  background: #2ecc71;
+}
+
+.duet-sidebar__btn--active {
+  background: #e67e22;
+}
+
+.duet-sidebar__btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.duet-sidebar__turn-badge {
+  margin-top: 0.4rem;
+  background: #f1c40f;
+  color: #1a3d24;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 10px;
+  letter-spacing: 0.05em;
+}
+
+.duet-sidebar__key-counts {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.duet-sidebar__key-count {
+  flex: 1;
+  text-align: center;
+  padding: 0.4rem;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.duet-sidebar__key-count--p1 {
+  border: 2px solid #1a6b3c;
+}
+
+.duet-sidebar__key-count--p2 {
+  border: 2px solid #2ecc71;
+}
+
+.duet-sidebar__key-count-value {
+  display: block;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  color: #fff;
+  line-height: 1;
+}
+
+.duet-sidebar__key-count-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.duet-sidebar__stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.duet-sidebar__stat {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  padding: 0.5rem;
+  text-align: center;
+}
+
+.duet-sidebar__stat-value {
+  display: block;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  color: #fff;
+  line-height: 1;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.duet-sidebar__stat-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.duet-sidebar__tokens {
+  width: 100%;
+  text-align: center;
+}
+
+.duet-sidebar__tokens-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.7);
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.duet-sidebar__token-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+}
+
+.duet-sidebar__token {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #2ecc71;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.duet-sidebar__token--used {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: none;
+}
+
+.duet-sidebar__sudden-death {
+  background: #e74c3c;
+  color: #fff;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.75rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 8px;
+  letter-spacing: 0.08em;
+  animation: sudden-badge-pulse 1s ease-in-out infinite;
+}
+
+@keyframes sudden-badge-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.game__mobile-teams--duet {
+  display: none;
+}
+
+.duet-mobile-player {
+  flex: 1;
+  text-align: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.6);
+  padding: 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+.duet-mobile-player--active {
+  color: #fff;
+  background: rgba(0, 0, 0, 0.35);
+  border: 2px solid #f1c40f;
+}
+
+.duet-mobile-key-btn {
+  background: #27ae60;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 0.5rem 0.75rem;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.duet-mobile-key-btn--active {
+  background: #e67e22;
+}
+
+.duet-mobile-key-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .setup__content--duet {
+    grid-template-columns: 1fr;
+  }
+
+  .game__main--duet {
+    flex-direction: column;
+  }
+
+  .game__main--duet .duet-sidebar {
+    display: none;
+  }
+
+  .game__mobile-teams--duet {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .game__grid--duet {
+    --avail-h: min(calc(100vw - 1rem), calc(100dvh - 12rem));
   }
 }

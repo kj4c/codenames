@@ -1,19 +1,31 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
+import type { GameMode } from '../types'
 import { parseWords, WORD_COUNT } from '../utils/gameLogic'
+import { shouldAutofocusInput } from '../utils/device'
 
 interface SetupScreenProps {
+  mode: GameMode
+  onModeChange: (mode: GameMode) => void
   initialWords?: string[]
-  onStart: (words: string[]) => void
+  onStartStandard: (words: string[]) => void
+  onStartDuet: (words: string[]) => void
 }
 
-export function SetupScreen({ initialWords = [], onStart }: SetupScreenProps) {
+export function SetupScreen({
+  mode,
+  onModeChange,
+  initialWords = [],
+  onStartStandard,
+  onStartDuet,
+}: SetupScreenProps) {
   const [bulkInput, setBulkInput] = useState('')
   const [words, setWords] = useState<string[]>(initialWords)
   const [newWord, setNewWord] = useState('')
   const [editingWord, setEditingWord] = useState<string | null>(null)
   const [editValue, setEditValue] = useState('')
 
+  const isDuet = mode === 'duet'
   const parsed = parseWords(bulkInput)
   const count = words.length
   const ready = count === WORD_COUNT
@@ -32,22 +44,12 @@ export function SetupScreen({ initialWords = [], onStart }: SetupScreenProps) {
     if (editingWord === word) setEditingWord(null)
   }
 
-  function startEdit(word: string) {
-    setEditingWord(word)
-    setEditValue(word)
-  }
-
   function saveEdit(e?: FormEvent) {
     e?.preventDefault()
     const w = editValue.trim().toUpperCase()
     if (!w || !editingWord) return
     if (w !== editingWord && words.includes(w)) return
     setWords((prev) => prev.map((x) => (x === editingWord ? w : x)))
-    setEditingWord(null)
-    setEditValue('')
-  }
-
-  function cancelEdit() {
     setEditingWord(null)
     setEditValue('')
   }
@@ -59,11 +61,6 @@ export function SetupScreen({ initialWords = [], onStart }: SetupScreenProps) {
     setBulkInput('')
   }
 
-  function shuffleAndStart() {
-    if (!ready) return
-    onStart(words)
-  }
-
   function resetWords() {
     setWords([])
     setBulkInput('')
@@ -72,15 +69,40 @@ export function SetupScreen({ initialWords = [], onStart }: SetupScreenProps) {
     setEditValue('')
   }
 
+  function handleStart() {
+    if (!ready) return
+    if (isDuet) onStartDuet(words)
+    else onStartStandard(words)
+  }
+
   return (
-    <div className="setup">
+    <div className={`setup ${isDuet ? 'setup--duet' : ''}`}>
       <header className="setup__header">
         <h1 className="setup__title">CODENAMES</h1>
         <p className="setup__subtitle">
           {isReplay
             ? 'Edit your word list and play again'
-            : 'Custom Word Edition — In-Person Play'}
+            : isDuet
+              ? 'Duet Mode — 2 players, cooperative'
+              : 'Custom Word Edition — In-Person Play'}
         </p>
+
+        <div className="setup__mode-toggle">
+          <button
+            type="button"
+            className={`setup__mode-btn ${mode === 'standard' ? 'setup__mode-btn--active' : ''}`}
+            onClick={() => onModeChange('standard')}
+          >
+            STANDARD
+          </button>
+          <button
+            type="button"
+            className={`setup__mode-btn ${mode === 'duet' ? 'setup__mode-btn--active' : ''}`}
+            onClick={() => onModeChange('duet')}
+          >
+            DUET
+          </button>
+        </div>
       </header>
 
       <div className="setup__content">
@@ -89,6 +111,8 @@ export function SetupScreen({ initialWords = [], onStart }: SetupScreenProps) {
           <p className="setup__hint">
             Enter exactly {WORD_COUNT} words for the board. Add them one at a time,
             paste a list, or click a word to edit it.
+            {isDuet &&
+              ' Each player gets their own key with overlapping agents — find all 15 together!'}
           </p>
 
           <form className="setup__add-row" onSubmit={addWord}>
@@ -99,7 +123,7 @@ export function SetupScreen({ initialWords = [], onStart }: SetupScreenProps) {
               value={newWord}
               onChange={(e) => setNewWord(e.target.value)}
               disabled={count >= WORD_COUNT}
-              autoFocus={!isReplay}
+              autoFocus={!isReplay && shouldAutofocusInput()}
             />
             <button
               type="submit"
@@ -164,9 +188,7 @@ export function SetupScreen({ initialWords = [], onStart }: SetupScreenProps) {
                     className="setup__word-edit-input"
                     value={editValue}
                     onChange={(e) => setEditValue(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Escape') cancelEdit()
-                    }}
+                    onKeyDown={(e) => e.key === 'Escape' && setEditingWord(null)}
                     autoFocus
                   />
                 </form>
@@ -175,7 +197,10 @@ export function SetupScreen({ initialWords = [], onStart }: SetupScreenProps) {
                   <button
                     type="button"
                     className="setup__word-label"
-                    onClick={() => startEdit(word)}
+                    onClick={() => {
+                      setEditingWord(word)
+                      setEditValue(word)
+                    }}
                     title="Click to edit"
                   >
                     {word}
@@ -204,8 +229,8 @@ export function SetupScreen({ initialWords = [], onStart }: SetupScreenProps) {
       <footer className="setup__footer">
         <button
           type="button"
-          className="setup__btn setup__btn--start"
-          onClick={shuffleAndStart}
+          className={`setup__btn setup__btn--start ${isDuet ? 'setup__btn--start-duet' : ''}`}
+          onClick={handleStart}
           disabled={!ready}
         >
           {isReplay ? 'PLAY AGAIN' : 'START GAME'}
