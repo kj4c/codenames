@@ -114,7 +114,7 @@ export function countUnrevealedAgentsForPlayer(
 function consumeToken(
   state: DuetGameState
 ): Pick<DuetGameState, 'tokensRemaining' | 'suddenDeath'> {
-  const tokensRemaining = state.tokensRemaining - 1
+  const tokensRemaining = Math.max(0, state.tokensRemaining - 1)
   const suddenDeath =
     tokensRemaining === 0 && state.agentsRemaining > 0 ? true : state.suddenDeath
   return { tokensRemaining, suddenDeath }

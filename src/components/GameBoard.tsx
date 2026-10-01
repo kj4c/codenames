@@ -32,13 +32,12 @@ export function GameBoard({ initialState, onNewGame }: GameBoardProps) {
   const spymasterView = spymasterTeam !== null
 
   function handleToggleSpymasterView(team: Team) {
-    if (game.gameOver || game.currentTeam !== team || game.currentClue) return
+    if (game.gameOver || game.currentTeam !== team) return
     setSpymasterTeam((prev) => (prev === team ? null : team))
   }
 
   function handleSubmitClue(word: string, count: number) {
-    if (!spymasterTeam) return
-    setGame((g) => submitClue(g, word, count, spymasterTeam))
+    setGame((g) => submitClue(g, word, count, g.currentTeam))
     setSpymasterTeam(null)
   }
 
@@ -65,11 +64,7 @@ export function GameBoard({ initialState, onNewGame }: GameBoardProps) {
     setSpymasterTeam(null)
   }
 
-  const canReveal =
-    !game.gameOver &&
-    !spymasterView &&
-    game.currentClue !== null &&
-    game.currentClue.team === game.currentTeam
+  const canReveal = !game.gameOver && !spymasterView
 
   const boardWords = game.cards.map((c) => c.word)
 
@@ -96,8 +91,6 @@ export function GameBoard({ initialState, onNewGame }: GameBoardProps) {
       <ClueBar
         currentTeam={game.currentTeam}
         currentClue={game.currentClue}
-        spymasterView={spymasterView}
-        activeTeam={spymasterTeam}
         gameOver={game.gameOver}
         winner={game.winner}
         assassinHit={game.assassinHit}
@@ -115,7 +108,7 @@ export function GameBoard({ initialState, onNewGame }: GameBoardProps) {
             isActive={game.currentTeam === 'blue' && !game.gameOver}
             spymasterView={spymasterTeam === 'blue'}
             canViewKey={
-              game.currentTeam === 'blue' && !game.currentClue && !game.gameOver
+              game.currentTeam === 'blue' && !game.gameOver
             }
             onToggleSpymasterView={() => handleToggleSpymasterView('blue')}
             gameOver={game.gameOver}
@@ -127,7 +120,7 @@ export function GameBoard({ initialState, onNewGame }: GameBoardProps) {
             isActive={game.currentTeam === 'red' && !game.gameOver}
             spymasterView={spymasterTeam === 'red'}
             canViewKey={
-              game.currentTeam === 'red' && !game.currentClue && !game.gameOver
+              game.currentTeam === 'red' && !game.gameOver
             }
             onToggleSpymasterView={() => handleToggleSpymasterView('red')}
             gameOver={game.gameOver}
@@ -140,7 +133,7 @@ export function GameBoard({ initialState, onNewGame }: GameBoardProps) {
           isActive={game.currentTeam === 'blue' && !game.gameOver}
           spymasterView={spymasterTeam === 'blue'}
           canViewKey={
-            game.currentTeam === 'blue' && !game.currentClue && !game.gameOver
+            game.currentTeam === 'blue' && !game.gameOver
           }
           onToggleSpymasterView={() => handleToggleSpymasterView('blue')}
           gameOver={game.gameOver}
@@ -170,7 +163,7 @@ export function GameBoard({ initialState, onNewGame }: GameBoardProps) {
           isActive={game.currentTeam === 'red' && !game.gameOver}
           spymasterView={spymasterTeam === 'red'}
           canViewKey={
-            game.currentTeam === 'red' && !game.currentClue && !game.gameOver
+            game.currentTeam === 'red' && !game.gameOver
           }
           onToggleSpymasterView={() => handleToggleSpymasterView('red')}
           gameOver={game.gameOver}

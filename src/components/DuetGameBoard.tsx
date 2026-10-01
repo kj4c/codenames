@@ -38,7 +38,7 @@ export function DuetGameBoard({
   }, [])
 
   function handleToggleSpymasterView() {
-    if (game.gameOver || game.currentClue) return
+    if (game.gameOver) return
     setSpymasterView((v) => !v)
   }
 
@@ -72,8 +72,7 @@ export function DuetGameBoard({
     setSpymasterView(false)
   }
 
-  const canReveal =
-    !game.gameOver && !spymasterView && game.currentClue !== null
+  const canReveal = !game.gameOver && !spymasterView
 
   const showAllKeys = game.gameOver
   const viewingPlayer = spymasterView ? game.currentPlayer : null
@@ -104,7 +103,6 @@ export function DuetGameBoard({
       <DuetClueBar
         currentPlayer={game.currentPlayer}
         currentClue={game.currentClue}
-        spymasterView={spymasterView}
         suddenDeath={game.suddenDeath}
         gameOver={game.gameOver}
         won={game.won}
@@ -127,7 +125,7 @@ export function DuetGameBoard({
             type="button"
             className={`duet-mobile-key-btn ${spymasterView ? 'duet-mobile-key-btn--active' : ''}`}
             onClick={handleToggleSpymasterView}
-            disabled={game.gameOver || !!game.currentClue}
+            disabled={game.gameOver}
           >
             {spymasterView ? 'HIDE KEY' : 'MY KEY'}
           </button>
@@ -146,7 +144,7 @@ export function DuetGameBoard({
           tokensRemaining={game.tokensRemaining}
           isActive={!game.gameOver}
           spymasterView={spymasterView}
-          canViewKey={!game.currentClue && !game.gameOver}
+          canViewKey={!game.gameOver}
           suddenDeath={game.suddenDeath}
           gameOver={game.gameOver}
           onToggleSpymasterView={handleToggleSpymasterView}

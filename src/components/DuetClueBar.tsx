@@ -5,7 +5,6 @@ import { shouldAutofocusInput } from '../utils/device'
 interface DuetClueBarProps {
   currentPlayer: Player
   currentClue: DuetClue | null
-  spymasterView: boolean
   suddenDeath: boolean
   gameOver: boolean
   won: boolean
@@ -20,7 +19,6 @@ interface DuetClueBarProps {
 export function DuetClueBar({
   currentPlayer,
   currentClue,
-  spymasterView,
   suddenDeath,
   gameOver,
   won,
@@ -64,10 +62,7 @@ export function DuetClueBar({
     )
   }
 
-  const showClueForm =
-    spymasterView && !currentClue
-
-  const showCurrentClue = currentClue !== null
+  const endTurnLabel = suddenDeath ? 'END TURN' : 'END TURN & TAKE TOKEN'
 
   return (
     <div className={`clue-bar clue-bar--duet ${suddenDeath ? 'clue-bar--sudden-death' : ''}`}>
@@ -75,9 +70,21 @@ export function DuetClueBar({
         <p className="clue-bar__sudden-death-banner">⚡ SUDDEN DEATH — NO MISTAKES ALLOWED</p>
       )}
 
-      {showClueForm ? (
+      {currentClue ? (
+        <div className="clue-bar__display">
+          <span className="clue-bar__label">{playerLabel}&apos;S CLUE</span>
+          <span className="clue-bar__clue-text">
+            {currentClue.word} {currentClue.count === 0 ? '∞' : currentClue.count}
+          </span>
+          <button type="button" className="clue-bar__end-turn" onClick={onEndTurn}>
+            {endTurnLabel}
+          </button>
+        </div>
+      ) : (
         <form className="clue-bar__form" onSubmit={handleSubmit}>
-          <span className="clue-bar__label">{playerLabel} — GIVE CLUE</span>
+          <span className="clue-bar__label">
+            {playerLabel}&apos;S TURN · {agentsFound}/15 AGENTS · {tokensRemaining} TOKENS
+          </span>
           <input
             type="text"
             className="clue-bar__input clue-bar__input--word"
@@ -97,23 +104,10 @@ export function DuetClueBar({
           <button type="submit" className="clue-bar__submit clue-bar__submit--duet">
             GIVE CLUE
           </button>
-        </form>
-      ) : showCurrentClue ? (
-        <div className="clue-bar__display">
-          <span className="clue-bar__clue-text">
-            {currentClue.word} {currentClue.count === 0 ? '∞' : currentClue.count}
-          </span>
           <button type="button" className="clue-bar__end-turn" onClick={onEndTurn}>
-            STOP &amp; TAKE TOKEN
+            {endTurnLabel}
           </button>
-        </div>
-      ) : (
-        <p className="clue-bar__status">
-          {playerLabel}&apos;S TURN — {agentsFound}/15 agents · {tokensRemaining} tokens left
-          {!currentClue && !spymasterView && (
-            <span className="clue-bar__hint"> — View your key before giving a clue</span>
-          )}
-        </p>
+        </form>
       )}
     </div>
   )

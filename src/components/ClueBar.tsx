@@ -5,8 +5,6 @@ import { shouldAutofocusInput } from '../utils/device'
 interface ClueBarProps {
   currentTeam: Team
   currentClue: Clue | null
-  spymasterView: boolean
-  activeTeam: Team | null
   gameOver: boolean
   winner: Team | null
   assassinHit: boolean
@@ -18,8 +16,6 @@ interface ClueBarProps {
 export function ClueBar({
   currentTeam,
   currentClue,
-  spymasterView,
-  activeTeam,
   gameOver,
   winner,
   assassinHit,
@@ -63,16 +59,25 @@ export function ClueBar({
     )
   }
 
-  const showClueForm =
-    spymasterView && activeTeam === currentTeam && !currentClue
-
-  const showCurrentClue = currentClue && currentClue.team === currentTeam
-
   return (
     <div className={`clue-bar clue-bar--${teamClass}`}>
-      {showClueForm ? (
+      {currentClue ? (
+        <div className="clue-bar__display">
+          <span className="clue-bar__label">{teamLabel} TEAM&apos;S CLUE</span>
+          <span className="clue-bar__clue-text">
+            {currentClue.word} {currentClue.count === 0 ? '∞' : currentClue.count}
+          </span>
+          <button
+            type="button"
+            className="clue-bar__end-turn"
+            onClick={onEndTurn}
+          >
+            END TURN
+          </button>
+        </div>
+      ) : (
         <form className="clue-bar__form" onSubmit={handleSubmit}>
-          <span className="clue-bar__label">{teamLabel} SPYMASTER — GIVE CLUE</span>
+          <span className="clue-bar__label">{teamLabel} TEAM&apos;S TURN</span>
           <input
             type="text"
             className="clue-bar__input clue-bar__input--word"
@@ -92,12 +97,6 @@ export function ClueBar({
           <button type="submit" className="clue-bar__submit">
             GIVE CLUE
           </button>
-        </form>
-      ) : showCurrentClue ? (
-        <div className="clue-bar__display">
-          <span className="clue-bar__clue-text">
-            {currentClue.word} {currentClue.count === 0 ? '∞' : currentClue.count}
-          </span>
           <button
             type="button"
             className="clue-bar__end-turn"
@@ -105,17 +104,7 @@ export function ClueBar({
           >
             END TURN
           </button>
-        </div>
-      ) : (
-        <p className="clue-bar__status">
-          {teamLabel} TEAM&apos;S TURN
-          {currentClue && currentClue.team !== currentTeam && (
-            <span className="clue-bar__waiting">
-              {' '}
-              — Waiting for {currentClue.team === 'red' ? 'RED' : 'BLUE'} operatives
-            </span>
-          )}
-        </p>
+        </form>
       )}
     </div>
   )
